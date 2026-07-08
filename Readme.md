@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
-* Студент: [Вадим Голубев](https://up.htmlacademy.ru/ecmascript-individual/2/user/233618).
-* Наставник: `Неизвестно`.
+- Студент: [Вадим Голубев](https://up.htmlacademy.ru/ecmascript-individual/2/user/233618).
+- Наставник: [Дмитрий Атаманов](https://htmlacademy.ru/profile/atamanov_dmitriy).
 
 ---
 
