@@ -1,6 +1,6 @@
 import { getRandomArrayElement } from '../utils.js';
-import { getDestinations } from './destination.js';
-import { getOffers } from './offer.js';
+import { getDestinationsList } from './destination.js';
+import { getOffersList } from './offer.js';
 
 const mockPoints = [
   {
@@ -96,10 +96,10 @@ const mockPoints = [
 ];
 
 const getDestinationById = (id) =>
-  getDestinations().find((item) => item.id === id);
+  getDestinationsList().find((item) => item.id === id);
 
 const getOfferById = (id) => {
-  for (const category of getOffers()) {
+  for (const category of getOffersList()) {
     const targetOffer = category.offers.find((offer) => offer.id === id);
 
     if (targetOffer) {

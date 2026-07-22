@@ -21,4 +21,11 @@ const getPointDuration = (startDateTime, endDateTime) => {
     .join(' ');
 };
 
-export { getRandomArrayElement, humanizePointDateTime, getPointDuration };
+const isEmptyPoint = (point) => !Object.entries(point).length;
+
+export {
+  getRandomArrayElement,
+  humanizePointDateTime,
+  getPointDuration,
+  isEmptyPoint,
+};

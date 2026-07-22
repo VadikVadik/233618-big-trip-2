@@ -270,6 +270,6 @@ const mockOffers = [
   },
 ];
 
-const getOffers = () => mockOffers;
+const getOffersList = () => mockOffers;
 
-export { getOffers };
+export { getOffersList };

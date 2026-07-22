@@ -10,4 +10,6 @@ const EVENT_TYPES = [
   'train',
 ];
 
-export { EVENT_TYPES };
+const DEFAULT_TYPE = 'flight';
+
+export { EVENT_TYPES, DEFAULT_TYPE };
