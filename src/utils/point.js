@@ -2,9 +2,6 @@ import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration.js';
 dayjs.extend(duration);
 
-const getRandomArrayElement = (items) =>
-  items[Math.floor(Math.random() * items.length)];
-
 const humanizePointDateTime = (pointDate, format) =>
   pointDate ? dayjs(pointDate).format(format) : '';
 
@@ -23,9 +20,4 @@ const getPointDuration = (startDateTime, endDateTime) => {
 
 const isEmptyPoint = (point) => !Object.entries(point).length;
 
-export {
-  getRandomArrayElement,
-  humanizePointDateTime,
-  getPointDuration,
-  isEmptyPoint,
-};
+export { humanizePointDateTime, getPointDuration, isEmptyPoint };

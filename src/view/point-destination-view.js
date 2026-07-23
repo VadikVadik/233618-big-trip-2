@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { isEmptyPoint } from '../utils.js';
+import { isEmptyPoint } from '../utils/point.js';
 
 const createPointDestinationTemplate = (point) => {
   if (isEmptyPoint(point)) {

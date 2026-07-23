@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { humanizePointDateTime, getPointDuration } from '../utils.js';
+import { humanizePointDateTime, getPointDuration } from '../utils/point.js';
 
 const DATE_FORMAT = 'YYYY-MM-DD';
 const SHORT_DATE_FORMAT = 'MMM DD';
@@ -64,13 +64,24 @@ const createPointTemplate = (point) => {
 
 export default class PointView extends AbstractView {
   #point = null;
+  #handleOpenClick = null;
 
-  constructor({ point }) {
+  constructor({ point, onOpenClick }) {
     super();
     this.#point = point;
+    this.#handleOpenClick = onOpenClick;
+
+    this.element
+      .querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#openClickHandler);
   }
 
   get template() {
     return createPointTemplate(this.#point);
   }
+
+  #openClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleOpenClick();
+  };
 }

@@ -28,34 +28,68 @@ export default class TripPresenter {
     this.#offersList = [...this.#offersModel.offers];
     this.#destinationsList = [...this.#destinationsModel.destinations];
 
+    this.#renderTrip();
+  }
+
+  #renderTrip() {
     render(new SortView(), this.#tripContainer);
     render(this.#tripListComponent, this.#tripContainer);
 
-    this.renderEditPointForm(this.#tripPoints[0]);
-
-    for (let i = 1; i < this.#tripPoints.length; i++) {
-      render(
-        new PointView({ point: this.#tripPoints[i] }),
-        this.#tripListComponent.element,
-      );
+    for (const point of this.#tripPoints) {
+      this.#renderPoint(point);
     }
   }
 
-  renderEditPointForm(point = {}) {
-    const pointView = new EditPointView({
-      point: point,
+  #renderPoint(point) {
+    const escKeyDownHandler = (evt) => {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        replaceFormtoPoint();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      }
+    };
+
+    const pointComponent = new PointView({
+      point,
+      onOpenClick: () => {
+        replacePointToForm();
+        document.addEventListener('keydown', escKeyDownHandler);
+      },
+    });
+
+    const editPointComponent = new EditPointView({
+      point,
       destinations: this.#destinationsList,
+      onFormSubmit: closeEditPointForm,
+      onCloseClick: closeEditPointForm,
     });
 
     const offersPresenter = new OffersPresenter({
-      point: pointView,
+      point: editPointComponent,
       offers: this.#offersList,
     });
 
-    const destinationPresenter = new DestinationPresenter({ point: pointView });
+    const destinationPresenter = new DestinationPresenter({
+      point: editPointComponent,
+    });
 
-    render(pointView, this.#tripListComponent.element);
-    offersPresenter.init();
-    destinationPresenter.init();
+    function closeEditPointForm() {
+      replaceFormtoPoint();
+      document.removeEventListener('keydown', escKeyDownHandler);
+    }
+
+    function replacePointToForm() {
+      replace(editPointComponent, pointComponent);
+      offersPresenter.init();
+      destinationPresenter.init();
+    }
+
+    function replaceFormtoPoint() {
+      replace(pointComponent, editPointComponent);
+      offersPresenter.reset();
+      destinationPresenter.reset();
+    }
+
+    render(pointComponent, this.#tripListComponent.element);
   }
 }

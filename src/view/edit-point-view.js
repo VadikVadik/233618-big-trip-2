@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { humanizePointDateTime, isEmptyPoint } from '../utils.js';
+import { humanizePointDateTime, isEmptyPoint } from '../utils/point.js';
 import { EVENT_TYPES, DEFAULT_TYPE } from '../const.js';
 
 const DATE_TIME_FORMAT = 'DD/MM/YY HH:mm';
@@ -103,11 +103,24 @@ const createEditPointTemplate = (point, destinations) => {
 export default class EditPointView extends AbstractView {
   #point = null;
   #destinations = null;
+  #handleFormSubmit = null;
+  #handleCloseClick = null;
 
-  constructor({ point, destinations }) {
+  constructor({ point, destinations, onFormSubmit, onCloseClick }) {
     super();
     this.#point = point;
     this.#destinations = destinations;
+    this.#handleFormSubmit = onFormSubmit;
+    this.#handleCloseClick = onCloseClick;
+
+    this.element
+      .querySelector('form')
+      .addEventListener('submit', this.#formSubmitHandler);
+    if (!isEmptyPoint(this.#point)) {
+      this.element
+        .querySelector('.event__rollup-btn')
+        .addEventListener('click', this.#closeClickHandler);
+    }
   }
 
   get template() {
@@ -117,4 +130,14 @@ export default class EditPointView extends AbstractView {
   get data() {
     return this.#point;
   }
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
+
+  #closeClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleCloseClick();
+  };
 }

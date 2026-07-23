@@ -3,17 +3,26 @@ import { render } from '../framework/render.js';
 
 export default class DestinationPresenter {
   #point = null;
+  #destinationComponent = null;
 
   constructor({ point }) {
     this.#point = point;
   }
 
   init() {
-    render(
-      new PointDestinationView({
+    if (!this.#destinationComponent) {
+      this.#destinationComponent = new PointDestinationView({
         point: this.#point.data,
-      }),
+      });
+    }
+
+    render(
+      this.#destinationComponent,
       this.#point.element.querySelector('.event__details'),
     );
+  }
+
+  reset() {
+    this.#destinationComponent.element.remove();
   }
 }
