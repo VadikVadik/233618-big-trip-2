@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { isEmptyPoint } from '../utils.js';
 import { DEFAULT_TYPE } from '../const.js';
 
@@ -39,25 +39,16 @@ const createPointOffersTemplate = (point, offers) => {
           </section>`;
 };
 
-export default class PointOffersView {
+export default class PointOffersView extends AbstractView {
+  #point = null;
+  #offers = null;
   constructor({ point, offers }) {
-    this.point = point;
-    this.offers = offers;
+    super();
+    this.#point = point;
+    this.#offers = offers;
   }
 
-  getTemplate() {
-    return createPointOffersTemplate(this.point, this.offers);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createPointOffersTemplate(this.#point, this.#offers);
   }
 }
