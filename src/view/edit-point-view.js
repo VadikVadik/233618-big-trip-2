@@ -131,6 +131,10 @@ export default class EditPointView extends AbstractView {
     return this.#point;
   }
 
+  get eventDetailsElement() {
+    return this.element.querySelector('.event__details');
+  }
+
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this.#handleFormSubmit();

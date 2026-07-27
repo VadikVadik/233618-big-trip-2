@@ -16,10 +16,7 @@ export default class DestinationPresenter {
       });
     }
 
-    render(
-      this.#destinationComponent,
-      this.#point.element.querySelector('.event__details'),
-    );
+    render(this.#destinationComponent, this.#point.eventDetailsElement);
   }
 
   reset() {

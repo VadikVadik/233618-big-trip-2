@@ -19,10 +19,7 @@ export default class OffersPresenter {
       });
     }
 
-    render(
-      this.#offersComponent,
-      this.#point.element.querySelector('.event__details'),
-    );
+    render(this.#offersComponent, this.#point.eventDetailsElement);
   }
 
   reset() {
