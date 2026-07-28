@@ -1,5 +1,5 @@
-import { createElement } from '../render.js';
-import { humanizePointDateTime, isEmptyPoint } from '../utils.js';
+import AbstractView from '../framework/view/abstract-view.js';
+import { humanizePointDateTime, isEmptyPoint } from '../utils/point.js';
 import { EVENT_TYPES, DEFAULT_TYPE } from '../const.js';
 
 const DATE_TIME_FORMAT = 'DD/MM/YY HH:mm';
@@ -100,29 +100,48 @@ const createEditPointTemplate = (point, destinations) => {
             </li>`;
 };
 
-export default class EditPointView {
-  constructor({ point, destinations }) {
-    this.point = point;
-    this.destinations = destinations;
-  }
+export default class EditPointView extends AbstractView {
+  #point = null;
+  #destinations = null;
+  #handleFormSubmit = null;
+  #handleCloseClick = null;
 
-  getTemplate() {
-    return createEditPointTemplate(this.point, this.destinations);
-  }
+  constructor({ point, destinations, onFormSubmit, onCloseClick }) {
+    super();
+    this.#point = point;
+    this.#destinations = destinations;
+    this.#handleFormSubmit = onFormSubmit;
+    this.#handleCloseClick = onCloseClick;
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+    this.element
+      .querySelector('form')
+      .addEventListener('submit', this.#formSubmitHandler);
+    if (!isEmptyPoint(this.#point)) {
+      this.element
+        .querySelector('.event__rollup-btn')
+        .addEventListener('click', this.#closeClickHandler);
     }
-
-    return this.element;
   }
 
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createEditPointTemplate(this.#point, this.#destinations);
   }
 
-  getPointData() {
-    return this.point;
+  get data() {
+    return this.#point;
   }
+
+  get eventDetailsElement() {
+    return this.element.querySelector('.event__details');
+  }
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
+
+  #closeClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleCloseClick();
+  };
 }
