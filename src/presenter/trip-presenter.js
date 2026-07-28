@@ -2,6 +2,7 @@ import SortView from '../view/sort-view.js';
 import TripListView from '../view/trip-list-view.js';
 import EditPointView from '../view/edit-point-view.js';
 import PointView from '../view/point-view.js';
+import NoPointView from '../view/no-point-view.js';
 import OffersPresenter from './offers-presenter.js';
 import DestinationPresenter from './destination-presenter.js';
 import { render, replace } from '../framework/render.js';
@@ -32,6 +33,11 @@ export default class TripPresenter {
   }
 
   #renderTrip() {
+    if (!this.#pointsModel.points.length) {
+      render(new NoPointView(), this.#tripContainer);
+      return;
+    }
+
     render(new SortView(), this.#tripContainer);
     render(this.#tripListComponent, this.#tripContainer);
 

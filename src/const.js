@@ -12,4 +12,13 @@ const EVENT_TYPES = [
 
 const DEFAULT_TYPE = 'flight';
 
-export { EVENT_TYPES, DEFAULT_TYPE };
+const SORT_TYPES = ['day', 'event', 'time', 'price', 'offer'];
+
+const FiterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past',
+};
+
+export { EVENT_TYPES, DEFAULT_TYPE, SORT_TYPES, FiterType };
