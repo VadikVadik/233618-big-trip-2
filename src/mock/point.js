@@ -4,8 +4,8 @@ import { getOffersList } from './offer.js';
 
 const mockPoints = [
   {
-    startDateTime: new Date('2026-05-01:09:00'),
-    endDateTime: new Date('2026-05-01:12:30'),
+    startDateTime: new Date('2026-05-01T09:00'),
+    endDateTime: new Date('2026-05-01T12:30'),
     type: 'bus',
     destination: 1,
     price: 250,
@@ -13,8 +13,8 @@ const mockPoints = [
     isFavorite: true,
   },
   {
-    startDateTime: new Date('2026-01-02:12:30'),
-    endDateTime: new Date('2026-01-02:21:05'),
+    startDateTime: new Date('2026-01-02T12:30'),
+    endDateTime: new Date('2026-01-02T21:05'),
     type: 'check-in',
     destination: 2,
     price: 1490,
@@ -22,8 +22,8 @@ const mockPoints = [
     isFavorite: false,
   },
   {
-    startDateTime: new Date('2026-11-04:11:45'),
-    endDateTime: new Date('2026-11-05:09:05'),
+    startDateTime: new Date('2026-11-04T11:45'),
+    endDateTime: new Date('2026-11-05T09:05'),
     type: 'drive',
     destination: 3,
     price: 890,
@@ -31,8 +31,8 @@ const mockPoints = [
     isFavorite: false,
   },
   {
-    startDateTime: new Date('2026-01-05:06:15'),
-    endDateTime: new Date('2026-01-05:18:45'),
+    startDateTime: new Date('2026-01-05T06:15'),
+    endDateTime: new Date('2026-01-05T18:45'),
     type: 'flight',
     destination: 1,
     price: 1250,
@@ -40,8 +40,8 @@ const mockPoints = [
     isFavorite: true,
   },
   {
-    startDateTime: new Date('2026-07-12:11:00'),
-    endDateTime: new Date('2026-07-12:11:15'),
+    startDateTime: new Date('2026-07-12T11:00'),
+    endDateTime: new Date('2026-07-12T11:15'),
     type: 'restaurant',
     destination: 2,
     price: 90,
@@ -49,8 +49,8 @@ const mockPoints = [
     isFavorite: true,
   },
   {
-    startDateTime: new Date('2026-01-06:19:56'),
-    endDateTime: new Date('2026-01-19:23:55'),
+    startDateTime: new Date('2026-01-06T19:56'),
+    endDateTime: new Date('2026-01-19T23:55'),
     type: 'ship',
     destination: 3,
     price: 2215,
@@ -58,8 +58,8 @@ const mockPoints = [
     isFavorite: false,
   },
   {
-    startDateTime: new Date('2026-01-06:19:56'),
-    endDateTime: new Date('2026-01-19:23:55'),
+    startDateTime: new Date('2026-01-06T19:56'),
+    endDateTime: new Date('2026-01-19T23:55'),
     type: 'sightseeing',
     destination: 3,
     price: 2215,
@@ -67,8 +67,8 @@ const mockPoints = [
     isFavorite: false,
   },
   {
-    startDateTime: new Date('2026-01-06:19:56'),
-    endDateTime: new Date('2026-01-19:23:55'),
+    startDateTime: new Date('2026-01-06T19:56'),
+    endDateTime: new Date('2026-01-19T23:55'),
     type: 'taxi',
     destination: 3,
     price: 2215,
@@ -76,8 +76,8 @@ const mockPoints = [
     isFavorite: false,
   },
   {
-    startDateTime: new Date('2026-01-06:19:56'),
-    endDateTime: new Date('2026-01-19:23:55'),
+    startDateTime: new Date('2026-01-06T19:56'),
+    endDateTime: new Date('2026-01-19T23:55'),
     type: 'train',
     destination: 3,
     price: 2215,
@@ -85,8 +85,8 @@ const mockPoints = [
     isFavorite: false,
   },
   {
-    startDateTime: new Date('2026-01-06:19:56'),
-    endDateTime: new Date('2026-01-19:23:55'),
+    startDateTime: new Date('2026-01-06T19:56'),
+    endDateTime: new Date('2026-01-19T23:55'),
     type: 'transport',
     destination: 3,
     price: 2215,
