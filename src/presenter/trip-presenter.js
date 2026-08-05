@@ -15,6 +15,7 @@ export default class TripPresenter {
   #tripPoints = null;
   #offersList = null;
   #destinationsList = null;
+  #pointPresenters = new Map();
 
   constructor({ tripContainer, pointsModel, offersModel, destinationsModel }) {
     this.#tripContainer = tripContainer;
@@ -51,12 +52,18 @@ export default class TripPresenter {
     });
 
     pointPresenter.init(point);
+    this.#pointPresenters.set(point.id, pointPresenter);
   }
 
   #renderPointList() {
     for (const point of this.#tripPoints) {
       this.#renderPoint(point);
     }
+  }
+
+  #clearPointList() {
+    this.#pointPresenters.forEach((presenter) => presenter.destroy());
+    this.#pointPresenters.clear();
   }
 
   #renderSort() {

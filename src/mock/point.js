@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid';
 import { getRandomArrayElement } from '../utils/common.js';
 import { getDestinationsList } from './destination.js';
 import { getOffersList } from './offer.js';
@@ -118,6 +119,7 @@ class MockPoint {
     offers,
     isFavorite,
   }) {
+    this.id = nanoid();
     this.startDateTime = startDateTime;
     this.endDateTime = endDateTime;
     this.type = type;
