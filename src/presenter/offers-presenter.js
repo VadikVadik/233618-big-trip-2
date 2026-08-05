@@ -21,8 +21,4 @@ export default class OffersPresenter {
 
     render(this.#offersComponent, this.#point.eventDetailsElement);
   }
-
-  reset() {
-    this.#offersComponent.element.remove();
-  }
 }
