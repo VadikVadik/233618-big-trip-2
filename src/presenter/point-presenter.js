@@ -4,8 +4,14 @@ import EditPointView from '../view/edit-point-view.js';
 import OffersPresenter from './offers-presenter.js';
 import DestinationPresenter from './destination-presenter.js';
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
 export default class PointPresenter {
   #point = null;
+  #mode = Mode.DEFAULT;
 
   #pointListContainer = null;
   #pointComponent = null;
@@ -15,18 +21,22 @@ export default class PointPresenter {
   #destinationsList = null;
   #offersPresenter = null;
   #destinationPresenter = null;
+
   #handleDataChange = null;
+  #handleModeChange = null;
 
   constructor({
     pointListContainer,
     offersList,
     destinationsList,
     onDataChange,
+    onModeChange,
   }) {
     this.#pointListContainer = pointListContainer;
     this.#offersList = offersList;
     this.#destinationsList = destinationsList;
     this.#handleDataChange = onDataChange;
+    this.#handleModeChange = onModeChange;
   }
 
   get point() {
@@ -73,13 +83,11 @@ export default class PointPresenter {
       return;
     }
 
-    if (this.#pointListContainer.element.contains(prevPointComponent.element)) {
+    if (this.#mode === Mode.DEFAULT) {
       replace(this.#pointComponent, prevPointComponent);
     }
 
-    if (
-      this.#pointListContainer.element.contains(prevEditPointComponent.element)
-    ) {
+    if (this.#mode === Mode.EDITING) {
       replace(this.#editPointComponent, prevEditPointComponent);
     }
 
@@ -92,14 +100,25 @@ export default class PointPresenter {
     remove(this.#editPointComponent);
   }
 
+  resetView() {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#replaceFormToPoint();
+      document.removeEventListener('keydown', this.#escKeyDownHandler);
+    }
+  }
+
   #replacePointToForm() {
     replace(this.#editPointComponent, this.#pointComponent);
     this.#offersPresenter.init();
     this.#destinationPresenter.init();
+
+    this.#handleModeChange();
+    this.#mode = Mode.EDITING;
   }
 
   #replaceFormToPoint() {
     replace(this.#pointComponent, this.#editPointComponent);
+    this.#mode = Mode.DEFAULT;
   }
 
   #escKeyDownHandler = (evt) => {
