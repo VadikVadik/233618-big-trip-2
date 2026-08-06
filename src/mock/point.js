@@ -8,90 +8,90 @@ const mockPoints = [
     startDateTime: new Date('2026-05-01T09:00'),
     endDateTime: new Date('2026-05-01T12:30'),
     type: 'bus',
-    destination: 1,
+    destinationId: 1,
     price: 250,
-    offers: [6, 8, 10],
+    offersIds: [6, 8, 10],
     isFavorite: true,
   },
   {
     startDateTime: new Date('2026-01-02T12:30'),
     endDateTime: new Date('2026-01-02T21:05'),
     type: 'check-in',
-    destination: 2,
+    destinationId: 2,
     price: 1490,
-    offers: [15],
+    offersIds: [15],
     isFavorite: false,
   },
   {
     startDateTime: new Date('2026-11-04T11:45'),
     endDateTime: new Date('2026-11-05T09:05'),
     type: 'drive',
-    destination: 3,
+    destinationId: 3,
     price: 890,
-    offers: [19, 20],
+    offersIds: [19, 20],
     isFavorite: false,
   },
   {
     startDateTime: new Date('2026-01-05T06:15'),
     endDateTime: new Date('2026-01-05T18:45'),
     type: 'flight',
-    destination: 1,
+    destinationId: 1,
     price: 1250,
-    offers: [23, 24, 26],
+    offersIds: [23, 24, 26],
     isFavorite: true,
   },
   {
     startDateTime: new Date('2026-07-12T11:00'),
     endDateTime: new Date('2026-07-12T11:15'),
     type: 'restaurant',
-    destination: 2,
+    destinationId: 2,
     price: 90,
-    offers: [28, 30],
+    offersIds: [28, 30],
     isFavorite: true,
   },
   {
     startDateTime: new Date('2026-01-06T19:56'),
     endDateTime: new Date('2026-01-19T23:55'),
     type: 'ship',
-    destination: 3,
+    destinationId: 3,
     price: 2215,
-    offers: [],
+    offersIds: [],
     isFavorite: false,
   },
   {
     startDateTime: new Date('2026-01-06T19:56'),
     endDateTime: new Date('2026-01-19T23:55'),
     type: 'sightseeing',
-    destination: 3,
+    destinationId: 3,
     price: 2215,
-    offers: [],
+    offersIds: [],
     isFavorite: false,
   },
   {
     startDateTime: new Date('2026-01-06T19:56'),
     endDateTime: new Date('2026-01-19T23:55'),
     type: 'taxi',
-    destination: 3,
+    destinationId: 3,
     price: 2215,
-    offers: [1, 3, 5],
+    offersIds: [1, 3, 5],
     isFavorite: false,
   },
   {
     startDateTime: new Date('2026-01-06T19:56'),
     endDateTime: new Date('2026-01-19T23:55'),
     type: 'train',
-    destination: 3,
+    destinationId: 3,
     price: 2215,
-    offers: [35, 37, 39],
+    offersIds: [35, 37, 39],
     isFavorite: false,
   },
   {
     startDateTime: new Date('2026-01-06T19:56'),
     endDateTime: new Date('2026-01-19T23:55'),
     type: 'transport',
-    destination: 3,
+    destinationId: 3,
     price: 2215,
-    offers: [44],
+    offersIds: [44],
     isFavorite: false,
   },
 ];
@@ -109,27 +109,24 @@ const getOfferById = (id) => {
   }
 };
 
-class MockPoint {
-  constructor({
-    startDateTime,
-    endDateTime,
-    type,
-    destination,
-    price,
-    offers,
-    isFavorite,
-  }) {
-    this.id = nanoid();
-    this.startDateTime = startDateTime;
-    this.endDateTime = endDateTime;
-    this.type = type;
-    this.price = price;
-    this.isFavorite = isFavorite;
-    this.destination = getDestinationById(destination);
-    this.offers = offers.map((id) => getOfferById(id));
+const getPoints = (pointsCount) => {
+  const points = [getRandomArrayElement(mockPoints)];
+
+  while (points.length < pointsCount) {
+    const newPoint = getRandomArrayElement(mockPoints);
+
+    if (!points.includes(newPoint)) {
+      points.push(newPoint);
+    }
   }
-}
 
-const getRandomPoint = () => new MockPoint(getRandomArrayElement(mockPoints));
+  points.map((point) => {
+    point.destination = getDestinationById(point.destinationId);
+    point.offers = point.offersIds.map((id) => getOfferById(id));
+    point.id = nanoid();
+  });
 
-export { getRandomPoint };
+  return points;
+};
+
+export { getPoints };

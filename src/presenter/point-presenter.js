@@ -15,11 +15,26 @@ export default class PointPresenter {
   #destinationsList = null;
   #offersPresenter = null;
   #destinationPresenter = null;
+  #handleDataChange = null;
 
-  constructor({ pointListContainer, offersList, destinationsList }) {
+  constructor({
+    pointListContainer,
+    offersList,
+    destinationsList,
+    onDataChange,
+  }) {
     this.#pointListContainer = pointListContainer;
     this.#offersList = offersList;
     this.#destinationsList = destinationsList;
+    this.#handleDataChange = onDataChange;
+  }
+
+  get point() {
+    return this.#point;
+  }
+
+  set point(value) {
+    this.#point = value;
   }
 
   init(point) {
@@ -34,12 +49,13 @@ export default class PointPresenter {
         this.#replacePointToForm();
         document.addEventListener('keydown', this.#escKeyDownHandler);
       },
+      onFavoriteClick: this.#handleFavoriteClick,
     });
 
     this.#editPointComponent = new EditPointView({
       point: this.#point,
       destinations: this.#destinationsList,
-      onFormSubmit: this.#closeEditPointForm,
+      onFormSubmit: this.#handleFormSubmit,
       onCloseClick: this.#closeEditPointForm,
     });
 
@@ -57,11 +73,13 @@ export default class PointPresenter {
       return;
     }
 
-    if (this.#pointListContainer.contains(prevPointComponent.element)) {
-      replace(this.#pointComponent, prevEditPointComponent);
+    if (this.#pointListContainer.element.contains(prevPointComponent.element)) {
+      replace(this.#pointComponent, prevPointComponent);
     }
 
-    if (this.#pointListContainer.contains(prevEditPointComponent.element)) {
+    if (
+      this.#pointListContainer.element.contains(prevEditPointComponent.element)
+    ) {
       replace(this.#editPointComponent, prevEditPointComponent);
     }
 
@@ -92,8 +110,20 @@ export default class PointPresenter {
     }
   };
 
+  #handleFormSubmit = (point) => {
+    this.#handleDataChange(point);
+    this.#closeEditPointForm();
+  };
+
   #closeEditPointForm = () => {
     this.#replaceFormToPoint();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
+  };
+
+  #handleFavoriteClick = () => {
+    this.#handleDataChange({
+      ...this.#point,
+      isFavorite: !this.#point.isFavorite,
+    });
   };
 }
