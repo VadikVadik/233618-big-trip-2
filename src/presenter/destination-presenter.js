@@ -18,8 +18,4 @@ export default class DestinationPresenter {
 
     render(this.#destinationComponent, this.#point.eventDetailsElement);
   }
-
-  reset() {
-    this.#destinationComponent.element.remove();
-  }
 }
