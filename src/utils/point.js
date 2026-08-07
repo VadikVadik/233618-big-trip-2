@@ -7,10 +7,14 @@ dayjs.extend(isBetween);
 const humanizePointDateTime = (pointDate, format) =>
   pointDate ? dayjs(pointDate).format(format) : '';
 
-const getPointDuration = (startDateTime, endDateTime) => {
+const getPointDuration = (startDateTime, endDateTime, number = false) => {
   const start = dayjs(startDateTime);
   const end = dayjs(endDateTime);
   const diff = end.diff(start, 'm');
+
+  if (number) {
+    return diff;
+  }
 
   return dayjs
     .duration(diff, 'm')
@@ -32,6 +36,19 @@ const isPresentPoint = (point) => {
 
 const isPastPoint = (point) => dayjs(point.endDateTime).isBefore(dayjs(), 'D');
 
+const sortPointsByDate = (pointA, pointB) =>
+  dayjs(pointA.startDateTime) - dayjs(pointB.startDateTime);
+
+const sortPointsByTime = (pointA, pointB) => {
+  const [durationA, durationB] = [pointA, pointB].map((point) =>
+    getPointDuration(point.startDateTime, point.endDateTime, true),
+  );
+
+  return durationB - durationA;
+};
+
+const sortPointsByPrice = (pointA, pointB) => pointB.price - pointA.price;
+
 export {
   humanizePointDateTime,
   getPointDuration,
@@ -39,4 +56,7 @@ export {
   isFuturePoint,
   isPresentPoint,
   isPastPoint,
+  sortPointsByDate,
+  sortPointsByTime,
+  sortPointsByPrice,
 };
