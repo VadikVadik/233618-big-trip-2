@@ -7,12 +7,16 @@ dayjs.extend(isBetween);
 const humanizePointDateTime = (pointDate, format) =>
   pointDate ? dayjs(pointDate).format(format) : '';
 
-const getPointDuration = (startDateTime, endDateTime, number = false) => {
+const getPointDuration = (
+  startDateTime,
+  endDateTime,
+  returnMinutes = false,
+) => {
   const start = dayjs(startDateTime);
   const end = dayjs(endDateTime);
   const diff = end.diff(start, 'm');
 
-  if (number) {
+  if (returnMinutes) {
     return diff;
   }
 
