@@ -1,5 +1,10 @@
+import dayjs from 'dayjs';
 import AbstractView from '../framework/view/abstract-view.js';
-import { humanizePointDateTime, getPointDuration } from '../utils/point.js';
+import {
+  humanizePointDateTime,
+  calcDuration,
+  formatDuration,
+} from '../utils/point.js';
 
 const DATE_FORMAT = 'YYYY-MM-DD';
 const SHORT_DATE_FORMAT = 'MMM DD';
@@ -40,7 +45,7 @@ const createPointTemplate = (point) => {
                       ${humanizePointDateTime(endDateTime, TIME_FORMAT)}
                     </time>
                   </p>
-                  <p class="event__duration">${getPointDuration(startDateTime, endDateTime)}</p>
+                  <p class="event__duration">${formatDuration(calcDuration(dayjs(startDateTime), dayjs(endDateTime)))}</p>
                 </div>
                 <p class="event__price">
                   &euro;&nbsp;<span class="event__price-value">${point.price}</span>
