@@ -10,6 +10,10 @@ const humanizePointDateTime = (pointDate, format) =>
 const calcDuration = (from, to) => Math.ceil(to.diff(from, 'minutes', true));
 
 const formatDuration = (diffMinutes) => {
+  if (diffMinutes === 0) {
+    return '0M';
+  }
+
   const interval = dayjs.duration(diffMinutes, 'minutes');
 
   const DD = interval.format('DD');
@@ -23,18 +27,14 @@ const formatDuration = (diffMinutes) => {
   }
 
   if (HH !== '00') {
-    result = `${HH}H  ${result}`;
+    result = `${HH}H ${result} `;
   }
 
   if (DD !== '00') {
-    result = `${DD}D  ${result}`;
+    result = `${DD}D ${result} `;
   }
 
-  if (result.length > 0) {
-    return result.slice(0, -1);
-  }
-
-  return '0M';
+  return result.slice(0, -1);
 };
 
 const isEmptyPoint = (point) => !Object.entries(point).length;
