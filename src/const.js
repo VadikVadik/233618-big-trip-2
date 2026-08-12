@@ -12,7 +12,13 @@ const EVENT_TYPES = [
 
 const DEFAULT_TYPE = 'flight';
 
-const SORT_TYPES = ['day', 'event', 'time', 'price', 'offer'];
+const SortType = {
+  DATE: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFER: 'offer',
+};
 
 const FiterType = {
   EVERYTHING: 'everything',
@@ -21,4 +27,4 @@ const FiterType = {
   PAST: 'past',
 };
 
-export { EVENT_TYPES, DEFAULT_TYPE, SORT_TYPES, FiterType };
+export { EVENT_TYPES, DEFAULT_TYPE, FiterType, SortType };

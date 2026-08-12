@@ -7,17 +7,34 @@ dayjs.extend(isBetween);
 const humanizePointDateTime = (pointDate, format) =>
   pointDate ? dayjs(pointDate).format(format) : '';
 
-const getPointDuration = (startDateTime, endDateTime) => {
-  const start = dayjs(startDateTime);
-  const end = dayjs(endDateTime);
-  const diff = end.diff(start, 'm');
+const calcDuration = (from, to) => Math.ceil(to.diff(from, 'minutes', true));
 
-  return dayjs
-    .duration(diff, 'm')
-    .format('DD[D] HH[H] mm[M]')
-    .split(' ')
-    .filter((part) => !/00/.test(part))
-    .join(' ');
+const formatDuration = (diffMinutes) => {
+  if (diffMinutes === 0) {
+    return '0M';
+  }
+
+  const interval = dayjs.duration(diffMinutes, 'minutes');
+
+  const DD = interval.format('DD');
+  const HH = interval.format('HH');
+  const mm = interval.format('mm');
+
+  let result = '';
+
+  if (mm !== '00') {
+    result = `${mm}M `;
+  }
+
+  if (HH !== '00') {
+    result = `${HH}H ${result} `;
+  }
+
+  if (DD !== '00') {
+    result = `${DD}D ${result} `;
+  }
+
+  return result.slice(0, -1);
 };
 
 const isEmptyPoint = (point) => !Object.entries(point).length;
@@ -32,11 +49,28 @@ const isPresentPoint = (point) => {
 
 const isPastPoint = (point) => dayjs(point.endDateTime).isBefore(dayjs(), 'D');
 
+const sortPointsByDate = (pointA, pointB) =>
+  dayjs(pointA.startDateTime) - dayjs(pointB.startDateTime);
+
+const sortPointsByTime = (pointA, pointB) => {
+  const [durationA, durationB] = [pointA, pointB].map((point) =>
+    calcDuration(dayjs(point.startDateTime), dayjs(point.endDateTime)),
+  );
+
+  return durationB - durationA;
+};
+
+const sortPointsByPrice = (pointA, pointB) => pointB.price - pointA.price;
+
 export {
   humanizePointDateTime,
-  getPointDuration,
+  calcDuration,
+  formatDuration,
   isEmptyPoint,
   isFuturePoint,
   isPresentPoint,
   isPastPoint,
+  sortPointsByDate,
+  sortPointsByTime,
+  sortPointsByPrice,
 };

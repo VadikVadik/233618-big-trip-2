@@ -1,9 +1,7 @@
 const getRandomArrayElement = (items) =>
   items[Math.floor(Math.random() * items.length)];
 
-const updateItem = (items, update) => {
-  items.get(update.id).point = update;
-  return items;
-};
+const updateItem = (items, update) =>
+  items.map((item) => (item.id === update.id ? update : item));
 
 export { getRandomArrayElement, updateItem };
