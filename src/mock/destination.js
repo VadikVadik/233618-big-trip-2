@@ -3,7 +3,7 @@ const mockDestinations = [
     id: 1,
     title: 'Amsterdam',
     description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. \
+      'Amsterdam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. \
       Cras aliquet varius magna, non porta ligula feugiat eget. \
       Fusce tristique felis at fermentum pharetra.',
     photos: [
@@ -17,7 +17,7 @@ const mockDestinations = [
     id: 2,
     title: 'Chamonix',
     description:
-      'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. \
+      'Chamonix. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. \
       Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.',
     photos: [
       'https://loremflickr.com/248/152?random=1',
@@ -30,7 +30,7 @@ const mockDestinations = [
     id: 3,
     title: 'Geneva',
     description:
-      'Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.',
+      'Geneva. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.',
     photos: [
       'https://loremflickr.com/248/152?random=77',
       'https://loremflickr.com/248/152?random=89',

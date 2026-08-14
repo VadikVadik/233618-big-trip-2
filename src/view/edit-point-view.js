@@ -1,4 +1,6 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import OffersPresenter from '../presenter/offers-presenter.js';
+import DestinationPresenter from '../presenter/destination-presenter.js';
 import { humanizePointDateTime, isEmptyPoint } from '../utils/point.js';
 import { EVENT_TYPES, DEFAULT_TYPE } from '../const.js';
 
@@ -100,48 +102,152 @@ const createEditPointTemplate = (point, destinations) => {
             </li>`;
 };
 
-export default class EditPointView extends AbstractView {
-  #point = null;
+export default class EditPointView extends AbstractStatefulView {
   #destinations = null;
+  #offers = null;
+  #defaultType = null;
+  #defaultDestination = null;
+  #defaultOffers = null;
   #handleFormSubmit = null;
   #handleCloseClick = null;
 
-  constructor({ point, destinations, onFormSubmit, onCloseClick }) {
+  constructor({ point, destinations, offers, onFormSubmit, onCloseClick }) {
     super();
-    this.#point = point;
+    this._setState(EditPointView.parsePointToState(point));
     this.#destinations = destinations;
+    this.#offers = offers;
+    this.#defaultType = point.type;
+    this.#defaultDestination = point.destination;
+    this.#defaultOffers = point.offers;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleCloseClick = onCloseClick;
 
-    this.element
-      .querySelector('form')
-      .addEventListener('submit', this.#formSubmitHandler);
-    if (!isEmptyPoint(this.#point)) {
-      this.element
-        .querySelector('.event__rollup-btn')
-        .addEventListener('click', this.#closeClickHandler);
-    }
+    this._restoreHandlers();
   }
 
   get template() {
-    return createEditPointTemplate(this.#point, this.#destinations);
+    return createEditPointTemplate(this._state, this.#destinations);
   }
 
   get data() {
-    return this.#point;
+    return this._state;
   }
 
   get eventDetailsElement() {
     return this.element.querySelector('.event__details');
   }
 
+  _restoreHandlers() {
+    this.element
+      .querySelector('form')
+      .addEventListener('submit', this.#formSubmitHandler);
+
+    if (!isEmptyPoint(this._state)) {
+      this.element
+        .querySelector('.event__rollup-btn')
+        .addEventListener('click', this.#closeClickHandler);
+    }
+
+    this.element
+      .querySelector('form')
+      .addEventListener('change', this.#eventTypeToggleHandler);
+    this.element
+      .querySelector('form')
+      .addEventListener('change', this.#offersChangeHandler);
+    this.element
+      .querySelector('[name="event-destination"]')
+      .addEventListener('change', this.#destinatonChangeHandler);
+  }
+
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit(this.#point);
+    this.#handleFormSubmit(EditPointView.parseStateToPoint(this._state));
   };
 
   #closeClickHandler = (evt) => {
     evt.preventDefault();
+    this.reset({
+      ...this._state,
+      type: this.#defaultType,
+      destination: this.#defaultDestination,
+      offers: this.#defaultOffers,
+    });
     this.#handleCloseClick();
   };
+
+  #eventTypeToggleHandler = (evt) => {
+    if (evt.target.name === 'event-type') {
+      evt.preventDefault();
+      this.updateElement({ type: evt.target.value, offers: [], offersIds: [] });
+      this.#rerenderOffers();
+      this.#rerenderDestination();
+    }
+  };
+
+  #destinatonChangeHandler = (evt) => {
+    evt.preventDefault();
+    const newDestination = this.#destinations.find(
+      (dest) => evt.target.value === dest.title,
+    );
+
+    if (newDestination) {
+      this.updateElement({ destination: newDestination });
+      this.#rerenderOffers();
+      this.#rerenderDestination();
+    }
+  };
+
+  #offersChangeHandler = (evt) => {
+    if (evt.target.id.includes('event-offer')) {
+      const offerTitle = this.element.querySelector(
+        `label[for="${evt.target.id}"] span`,
+      ).textContent;
+
+      const offer = this.#offers
+        .find((offers) => offers.type === this._state.type)
+        .offers.find((item) => item.title === offerTitle);
+
+      if (evt.target.checked) {
+        this._state.offers.push(offer);
+        this._state.offersIds.push(offer.id);
+      } else {
+        this._state.offers = this._state.offers.filter(
+          (item) => item.id !== offer.id,
+        );
+        this._state.offersIds = this._state.offersIds.filter(
+          (id) => id !== offer.id,
+        );
+      }
+    }
+  };
+
+  #rerenderOffers() {
+    const offersPresenter = new OffersPresenter({
+      point: this,
+      offers: this.#offers,
+    });
+
+    offersPresenter.init();
+  }
+
+  #rerenderDestination() {
+    const destinationPresenter = new DestinationPresenter({
+      point: this,
+      destinations: this.#destinations,
+    });
+
+    destinationPresenter.init();
+  }
+
+  static parsePointToState(point) {
+    return { ...point };
+  }
+
+  static parseStateToPoint(state) {
+    return { ...state };
+  }
+
+  reset(point) {
+    this.updateElement(EditPointView.parseStateToPoint(point));
+  }
 }
