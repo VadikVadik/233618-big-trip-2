@@ -1,3 +1,9 @@
+import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration.js';
+import isBetween from 'dayjs/plugin/isBetween.js';
+dayjs.extend(duration);
+dayjs.extend(isBetween);
+
 import FilterView from './view/filter-view.js';
 import TripPresenter from './presenter/trip-presenter.js';
 import PointsModel from './model/points-model.js';

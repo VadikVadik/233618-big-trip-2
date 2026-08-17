@@ -12,12 +12,10 @@ export default class OffersPresenter {
   }
 
   init() {
-    if (!this.#offersComponent) {
-      this.#offersComponent = new PointOffersView({
-        point: this.#point.data,
-        offers: this.#offers,
-      });
-    }
+    this.#offersComponent = new PointOffersView({
+      point: this.#point.data,
+      offers: this.#offers,
+    });
 
     render(this.#offersComponent, this.#point.eventDetailsElement);
   }
