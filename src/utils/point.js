@@ -3,6 +3,8 @@ import dayjs from 'dayjs';
 const humanizePointDateTime = (pointDate, format) =>
   pointDate ? dayjs(pointDate).format(format) : '';
 
+const toIsoString = (date) => dayjs(date).toISOString();
+
 const calcDuration = (from, to) => Math.ceil(to.diff(from, 'minutes', true));
 
 const formatDuration = (diffMinutes) => {
@@ -60,6 +62,7 @@ const sortPointsByPrice = (pointA, pointB) => pointB.price - pointA.price;
 
 export {
   humanizePointDateTime,
+  toIsoString,
   calcDuration,
   formatDuration,
   isEmptyPoint,
