@@ -144,10 +144,15 @@ export default class EditPointView extends AbstractStatefulView {
   removeElement() {
     super.removeElement();
 
-    this.#startDatepicker.destroy();
-    this.#endDatepicker.destroy();
-    this.#startDatepicker = null;
-    this.#endDatepicker = null;
+    if (this.#startDatepicker) {
+      this.#startDatepicker.destroy();
+      this.#startDatepicker = null;
+    }
+
+    if (this.#endDatepicker) {
+      this.#endDatepicker.destroy();
+      this.#endDatepicker = null;
+    }
   }
 
   _restoreHandlers() {
@@ -170,11 +175,12 @@ export default class EditPointView extends AbstractStatefulView {
     this.element
       .querySelector('[name="event-destination"]')
       .addEventListener('change', this.#destinatonChangeHandler);
-
-    this.#setDatepicker();
+    this.element
+      .querySelector('#event-price-1')
+      .addEventListener('change', this.#priceChangeHandler);
   }
 
-  #setDatepicker() {
+  setDatepicker() {
     const datepickerOptions = {
       enableTime: true,
       time_24hr: true,
@@ -202,8 +208,7 @@ export default class EditPointView extends AbstractStatefulView {
       startDateTime: toIsoString(userDate),
     });
 
-    this.#rerenderOffers();
-    this.#rerenderDestination();
+    this.#updateView();
   };
 
   #endDateChangeHandler = ([userDate]) => {
@@ -211,8 +216,7 @@ export default class EditPointView extends AbstractStatefulView {
       endDateTime: toIsoString(userDate),
     });
 
-    this.#rerenderOffers();
-    this.#rerenderDestination();
+    this.#updateView();
   };
 
   #formSubmitHandler = (evt) => {
@@ -230,8 +234,7 @@ export default class EditPointView extends AbstractStatefulView {
     if (evt.target.name === 'event-type') {
       evt.preventDefault();
       this.updateElement({ type: evt.target.value, offers: [], offersIds: [] });
-      this.#rerenderOffers();
-      this.#rerenderDestination();
+      this.#updateView();
     }
   };
 
@@ -243,9 +246,14 @@ export default class EditPointView extends AbstractStatefulView {
 
     if (newDestination) {
       this.updateElement({ destination: newDestination });
-      this.#rerenderOffers();
-      this.#rerenderDestination();
+      this.#updateView();
     }
+  };
+
+  #priceChangeHandler = (evt) => {
+    evt.preventDefault();
+    this.updateElement({ price: evt.target.value });
+    this.#updateView();
   };
 
   #offersChangeHandler = (evt) => {
@@ -288,6 +296,12 @@ export default class EditPointView extends AbstractStatefulView {
     });
 
     destinationPresenter.init();
+  }
+
+  #updateView() {
+    this.#rerenderOffers();
+    this.#rerenderDestination();
+    this.setDatepicker();
   }
 
   static parsePointToState(point) {

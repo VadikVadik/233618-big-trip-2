@@ -105,6 +105,7 @@ export default class PointPresenter {
     replace(this.#editPointComponent, this.#pointComponent);
     this.#offersPresenter.init();
     this.#destinationPresenter.init();
+    this.#editPointComponent.setDatepicker();
 
     this.#handleModeChange();
     this.#mode = Mode.EDITING;
