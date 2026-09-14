@@ -1,6 +1,6 @@
 import SortView from '../view/sort-view.js';
 import TripListView from '../view/trip-list-view.js';
-import NoPointView from '../view/no-point-view.js';
+import MessageView from '../view/message-view.js';
 import PointPresenter from './point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
 import { render, RenderPosition, remove } from '../framework/render.js';
@@ -12,9 +12,16 @@ import {
   sortPointsByPrice,
 } from '../utils/point.js';
 
+const noPointsTextType = {
+  [FilterType.EVERYTHING]: 'Click New Event to create your first point',
+  [FilterType.FUTURE]: 'There are no future events now',
+  [FilterType.PAST]: 'There are no past events now',
+  [FilterType.PRESENT]: 'There are no present events now',
+};
+
 export default class TripPresenter {
   #tripListComponent = new TripListView();
-  #noPointComponent = null;
+  #messageComponent = null;
   #sortComponent = null;
   #tripContainer = null;
   #pointsModel = null;
@@ -136,8 +143,12 @@ export default class TripPresenter {
   }
 
   #renderNoPoints() {
-    this.#noPointComponent = new NoPointView({ filterType: this.#filterType });
-    render(this.#noPointComponent, this.#tripContainer);
+    const noPointsTextValue = noPointsTextType[this.#filterType];
+    this.#messageComponent = new MessageView({
+      message: noPointsTextValue,
+    });
+
+    render(this.#messageComponent, this.#tripContainer);
   }
 
   #handleViewAction = (actionType, updateType, update) => {
@@ -177,8 +188,8 @@ export default class TripPresenter {
 
     remove(this.#sortComponent);
 
-    if (this.#noPointComponent) {
-      remove(this.#noPointComponent);
+    if (this.#messageComponent) {
+      remove(this.#messageComponent);
     }
 
     if (resetSortType) {
