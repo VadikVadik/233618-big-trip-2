@@ -1,24 +1,27 @@
 import Observable from '../framework/observable.js';
-import { getPoints } from '../mock/point.js';
 
-const POINT_COUNT = 4;
 const UNEXISTING_POINT_MESSAGE = 'Point is not exist';
 
 export default class PointsModel extends Observable {
-  #pointsApiService = null;
-  #points = getPoints(POINT_COUNT);
+  #tripApiService = null;
+  #points = [];
 
-  constructor({ pointsApiService }) {
+  constructor({ tripApiService }) {
     super();
-    this.#pointsApiService = pointsApiService;
-
-    this.#pointsApiService.points.then((points) =>
-      console.log(points.map((point) => this.#adaptToClient(point))),
-    );
+    this.#tripApiService = tripApiService;
   }
 
   get points() {
     return this.#points;
+  }
+
+  async init() {
+    try {
+      const points = await this.#tripApiService.points;
+      this.#points = points.map((point) => this.#adaptToClient(point));
+    } catch (err) {
+      this.#points = [];
+    }
   }
 
   updatePoint(updateType, update) {

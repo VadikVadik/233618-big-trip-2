@@ -12,10 +12,12 @@ import DestinationsModel from './model/destinations-model.js';
 import FilterModel from './model/filter-model.js';
 import NewPointButtonView from './view/new-point-button-view.js';
 import { render } from './framework/render.js';
-import PointsApiService from './points-api-service.js';
+import TripApiService from './trip-api-service.js';
 
 const AUTHORIZATION = 'Basic kjuf56yu9nbv34w';
 const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
+
+const tripApiService = new TripApiService(END_POINT, AUTHORIZATION);
 
 const siteHeaderElement = document.querySelector('.trip-main');
 const filterElement = siteHeaderElement.querySelector(
@@ -24,10 +26,12 @@ const filterElement = siteHeaderElement.querySelector(
 const tripEventsElement = document.querySelector('.trip-events');
 
 const pointsModel = new PointsModel({
-  pointsApiService: new PointsApiService(END_POINT, AUTHORIZATION),
+  tripApiService: tripApiService,
 });
-const offersModel = new OffersModel();
-const destinationsModel = new DestinationsModel();
+const offersModel = new OffersModel({ tripApiService: tripApiService });
+const destinationsModel = new DestinationsModel({
+  tripApiService: tripApiService,
+});
 const filterModel = new FilterModel();
 
 const tripPresenter = new TripPresenter({
@@ -61,3 +65,6 @@ function handleNewPointButtonClick() {
 render(newPointButtonComponent, siteHeaderElement);
 filterPresenter.init();
 tripPresenter.init();
+offersModel.init();
+destinationsModel.init();
+pointsModel.init();
