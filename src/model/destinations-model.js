@@ -14,14 +14,10 @@ export default class DestinationsModel extends Observable {
   }
 
   async init() {
-    try {
-      const destinations = this.#tripApiService.destinations;
-      this.#destinations = destinations.map((destination) =>
-        this.#adaptToClient(destination),
-      );
-    } catch (err) {
-      this.#destinations = [];
-    }
+    const destinations = await this.#tripApiService.destinations;
+    this.#destinations = destinations.map((destination) =>
+      this.#adaptToClient(destination),
+    );
   }
 
   #adaptToClient(destination) {

@@ -25,13 +25,17 @@ const filterElement = siteHeaderElement.querySelector(
 );
 const tripEventsElement = document.querySelector('.trip-events');
 
-const pointsModel = new PointsModel({
-  tripApiService: tripApiService,
-});
 const offersModel = new OffersModel({ tripApiService: tripApiService });
 const destinationsModel = new DestinationsModel({
   tripApiService: tripApiService,
 });
+
+const pointsModel = new PointsModel({
+  tripApiService,
+  offersModel,
+  destinationsModel,
+});
+
 const filterModel = new FilterModel();
 
 const tripPresenter = new TripPresenter({
@@ -62,9 +66,8 @@ function handleNewPointButtonClick() {
   newPointButtonComponent.element.disabled = true;
 }
 
-render(newPointButtonComponent, siteHeaderElement);
 filterPresenter.init();
 tripPresenter.init();
-offersModel.init();
-destinationsModel.init();
-pointsModel.init();
+pointsModel.init().finally(() => {
+  render(newPointButtonComponent, siteHeaderElement);
+});

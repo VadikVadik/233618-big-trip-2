@@ -32,6 +32,13 @@ export default class TripPresenter {
   #newPointPresenter = null;
   #currentSortType = SortType.DATE;
   #filterType = FilterType.EVERYTHING;
+  #loadingComponent = new MessageView({ message: 'Loading...' });
+  #failedComponent = new MessageView({
+    message: 'Failed to load latest route information',
+  });
+
+  #isLoading = true;
+  #isFailed = false;
 
   constructor({
     tripContainer,
@@ -97,6 +104,16 @@ export default class TripPresenter {
   #renderTrip() {
     render(this.#tripListComponent, this.#tripContainer);
 
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
+    if (this.#isFailed) {
+      this.#renderFailed();
+      return;
+    }
+
     const points = this.points;
 
     if (!points.length) {
@@ -142,6 +159,14 @@ export default class TripPresenter {
     render(this.#sortComponent, this.#tripContainer, RenderPosition.AFTERBEGIN);
   }
 
+  #renderLoading() {
+    render(this.#loadingComponent, this.#tripContainer);
+  }
+
+  #renderFailed() {
+    render(this.#failedComponent, this.#tripContainer);
+  }
+
   #renderNoPoints() {
     const noPointsTextValue = noPointsTextType[this.#filterType];
     this.#messageComponent = new MessageView({
@@ -178,6 +203,17 @@ export default class TripPresenter {
         this.#clearTrip({ resetSortType: true });
         this.#renderTrip();
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderTrip();
+        break;
+      case UpdateType.FAILED:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#isFailed = true;
+        this.#renderTrip();
+        break;
     }
   };
 
@@ -187,6 +223,8 @@ export default class TripPresenter {
     this.#pointPresenters.clear();
 
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
+    remove(this.#failedComponent);
 
     if (this.#messageComponent) {
       remove(this.#messageComponent);

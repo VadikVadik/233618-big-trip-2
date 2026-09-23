@@ -88,6 +88,13 @@ export default class PointView extends AbstractView {
   }
 
   get template() {
+    try {
+      return createPointTemplate(this.#point);
+    } catch (err) {
+      console.log(err);
+      console.log(this.#point);
+    }
+
     return createPointTemplate(this.#point);
   }
 
