@@ -1,3 +1,4 @@
+import he from 'he';
 import dayjs from 'dayjs';
 import AbstractView from '../framework/view/abstract-view.js';
 import {
@@ -28,21 +29,21 @@ const createPointTemplate = (point) => {
 
   return `<li class="trip-events__item">
               <div class="event">
-                <time class="event__date" datetime="${humanizePointDateTime(startDateTime, DATE_FORMAT)}">
-                  ${humanizePointDateTime(startDateTime, SHORT_DATE_FORMAT)}
+                <time class="event__date" datetime="${he.encode(humanizePointDateTime(startDateTime, DATE_FORMAT))}">
+                  ${he.encode(humanizePointDateTime(startDateTime, SHORT_DATE_FORMAT))}
                 </time>
                 <div class="event__type">
                   <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
                 </div>
-                <h3 class="event__title">${type} ${destination.title}</h3>
+                <h3 class="event__title">${he.encode(type)} ${he.encode(destination.title)}</h3>
                 <div class="event__schedule">
                   <p class="event__time">
-                    <time class="event__start-time" datetime="${humanizePointDateTime(startDateTime, DATE_TIME_FORMAT)}">
-                      ${humanizePointDateTime(startDateTime, TIME_FORMAT)}
+                    <time class="event__start-time" datetime="${he.encode(humanizePointDateTime(startDateTime, DATE_TIME_FORMAT))}">
+                      ${he.encode(humanizePointDateTime(startDateTime, TIME_FORMAT))}
                     </time>
                     &mdash;
-                    <time class="event__end-time" datetime="${humanizePointDateTime(endDateTime, DATE_TIME_FORMAT)}">
-                      ${humanizePointDateTime(endDateTime, TIME_FORMAT)}
+                    <time class="event__end-time" datetime="${he.encode(humanizePointDateTime(endDateTime, DATE_TIME_FORMAT))}">
+                      ${he.encode(humanizePointDateTime(endDateTime, TIME_FORMAT))}
                     </time>
                   </p>
                   <p class="event__duration">${formatDuration(calcDuration(dayjs(startDateTime), dayjs(endDateTime)))}</p>

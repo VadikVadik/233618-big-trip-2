@@ -1,13 +1,13 @@
-import { FiterType } from '../const.js';
+import { FilterType } from '../const.js';
 import { isFuturePoint, isPresentPoint, isPastPoint } from './point.js';
 
 const filter = {
-  [FiterType.EVERYTHING]: (points) => points,
-  [FiterType.FUTURE]: (points) =>
+  [FilterType.EVERYTHING]: (points) => points,
+  [FilterType.FUTURE]: (points) =>
     points.filter((point) => isFuturePoint(point)),
-  [FiterType.PRESENT]: (points) =>
+  [FilterType.PRESENT]: (points) =>
     points.filter((point) => isPresentPoint(point)),
-  [FiterType.PAST]: (points) => points.filter((point) => isPastPoint(point)),
+  [FilterType.PAST]: (points) => points.filter((point) => isPastPoint(point)),
 };
 
 export { filter };

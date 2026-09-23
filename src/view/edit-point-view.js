@@ -1,21 +1,16 @@
+import he from 'he';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import OffersPresenter from '../presenter/offers-presenter.js';
 import DestinationPresenter from '../presenter/destination-presenter.js';
-import {
-  humanizePointDateTime,
-  toIsoString,
-  isEmptyPoint,
-} from '../utils/point.js';
-import { EVENT_TYPES, DEFAULT_TYPE } from '../const.js';
+import { humanizePointDateTime, toIsoString } from '../utils/point.js';
+import { EVENT_TYPES, DEFAULT_POINT } from '../const.js';
 
 const DATE_TIME_FORMAT = 'DD/MM/YY HH:mm';
 
-const createEventTypeListTemplate = (point) => {
-  const checkedType = isEmptyPoint(point) ? DEFAULT_TYPE : point.type;
-
-  return EVENT_TYPES.map(
+const createEventTypeListTemplate = (point) =>
+  EVENT_TYPES.map(
     (type) =>
       `<div class="event__type-item">
         <input id="event-type-${type}-1"
@@ -23,14 +18,13 @@ const createEventTypeListTemplate = (point) => {
                type="radio"
                name="event-type"
                value="${type}"
-               ${checkedType === type ? 'checked' : ''}>
+               ${point.type === type ? 'checked' : ''}>
         <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type}</label>
       </div>`,
   ).join(' ');
-};
 
-const createOpenEventButtonTemplate = (point) => {
-  if (isEmptyPoint(point)) {
+const createOpenEventButtonTemplate = (isNewPoint) => {
+  if (isNewPoint) {
     return '';
   }
 
@@ -39,7 +33,7 @@ const createOpenEventButtonTemplate = (point) => {
           </button>`;
 };
 
-const createEditPointTemplate = (point, destinations) => {
+const createEditPointTemplate = (point, destinations, isNewPoint) => {
   const { startDateTime, endDateTime, type, destination } = point;
 
   return `<li class="trip-events__item">
@@ -48,7 +42,7 @@ const createEditPointTemplate = (point, destinations) => {
                   <div class="event__type-wrapper">
                     <label class="event__type  event__type-btn" for="event-type-toggle-1">
                       <span class="visually-hidden">Choose event type</span>
-                      <img class="event__type-icon" width="17" height="17" src="img/icons/${type || DEFAULT_TYPE}.png" alt="Event type icon">
+                      <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
                     </label>
                     <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
                     <div class="event__type-list">
@@ -60,16 +54,16 @@ const createEditPointTemplate = (point, destinations) => {
                   </div>
                   <div class="event__field-group  event__field-group--destination">
                     <label class="event__label  event__type-output" for="event-destination-1">
-                      ${type || DEFAULT_TYPE}
+                      ${type}
                     </label>
                     <input class="event__input  event__input--destination"
                            id="event-destination-1"
                            type="text"
                            name="event-destination"
-                           value="${destination ? destination.title : ''}"
+                           value="${he.encode(destination.title)}"
                            list="destination-list-1">
                     <datalist id="destination-list-1">
-                      ${destinations.map((dest) => `<option value="${dest.title}"></option>`).join('')}
+                      ${destinations.map((dest) => `<option value="${he.encode(dest.title)}"></option>`).join('')}
                     </datalist>
                   </div>
                   <div class="event__field-group  event__field-group--time">
@@ -78,14 +72,14 @@ const createEditPointTemplate = (point, destinations) => {
                            id="event-start-time-1"
                            type="text"
                            name="event-start-time"
-                           value="${startDateTime ? humanizePointDateTime(startDateTime, DATE_TIME_FORMAT) : ''}">
+                           value="${he.encode(humanizePointDateTime(startDateTime, DATE_TIME_FORMAT))}">
                     &mdash;
                     <label class="visually-hidden" for="event-end-time-1">To</label>
                     <input class="event__input  event__input--time"
                            id="event-end-time-1"
                            type="text"
                            name="event-end-time"
-                           value="${endDateTime ? humanizePointDateTime(endDateTime, DATE_TIME_FORMAT) : ''}">
+                           value="${he.encode(humanizePointDateTime(endDateTime, DATE_TIME_FORMAT))}">
                   </div>
                   <div class="event__field-group  event__field-group--price">
                     <label class="event__label" for="event-price-1">
@@ -96,11 +90,11 @@ const createEditPointTemplate = (point, destinations) => {
                            id="event-price-1"
                            type="text"
                            name="event-price"
-                           value="${isEmptyPoint(point) ? '0' : point.price}">
+                           value="${point.price}">
                   </div>
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-                  <button class="event__reset-btn" type="reset">${isEmptyPoint(point) ? 'Cancel' : 'Delete'}</button>
-                  ${createOpenEventButtonTemplate(point)}
+                  <button class="event__reset-btn" type="reset">${isNewPoint ? 'Cancel' : 'Delete'}</button>
+                  ${createOpenEventButtonTemplate(isNewPoint)}
                 </header>
                 <section class="event__details">
                 </section>
@@ -114,23 +108,45 @@ export default class EditPointView extends AbstractStatefulView {
   #defaultState = null;
   #handleFormSubmit = null;
   #handleCloseClick = null;
+  #handleDeleteClick = null;
   #startDatepicker = null;
   #endDatepicker = null;
 
-  constructor({ point, destinations, offers, onFormSubmit, onCloseClick }) {
+  #isNewPoint = false;
+
+  constructor({
+    point,
+    destinations,
+    offers,
+    onFormSubmit,
+    onCloseClick,
+    onDeleteClick,
+    isNewPoint = false,
+  }) {
     super();
+
+    if (isNewPoint) {
+      point = DEFAULT_POINT;
+    }
+
     this._setState(EditPointView.parsePointToState(point));
     this.#defaultState = this._state;
     this.#destinations = destinations;
     this.#offers = offers;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleCloseClick = onCloseClick;
+    this.#handleDeleteClick = onDeleteClick;
+    this.#isNewPoint = isNewPoint;
 
     this._restoreHandlers();
   }
 
   get template() {
-    return createEditPointTemplate(this._state, this.#destinations);
+    return createEditPointTemplate(
+      this._state,
+      this.#destinations,
+      this.#isNewPoint,
+    );
   }
 
   get data() {
@@ -160,7 +176,7 @@ export default class EditPointView extends AbstractStatefulView {
       .querySelector('form')
       .addEventListener('submit', this.#formSubmitHandler);
 
-    if (!isEmptyPoint(this._state)) {
+    if (!this.#isNewPoint) {
       this.element
         .querySelector('.event__rollup-btn')
         .addEventListener('click', this.#closeClickHandler);
@@ -178,6 +194,9 @@ export default class EditPointView extends AbstractStatefulView {
     this.element
       .querySelector('#event-price-1')
       .addEventListener('change', this.#priceChangeHandler);
+    this.element
+      .querySelector('.event__reset-btn')
+      .addEventListener('click', this.#formDeleteClickHandler);
   }
 
   setDatepicker() {
@@ -278,6 +297,11 @@ export default class EditPointView extends AbstractStatefulView {
         );
       }
     }
+  };
+
+  #formDeleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteClick(EditPointView.parseStateToPoint(this._state));
   };
 
   #rerenderOffers() {
