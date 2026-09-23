@@ -12,6 +12,10 @@ import DestinationsModel from './model/destinations-model.js';
 import FilterModel from './model/filter-model.js';
 import NewPointButtonView from './view/new-point-button-view.js';
 import { render } from './framework/render.js';
+import PointsApiService from './points-api-service.js';
+
+const AUTHORIZATION = 'Basic kjuf56yu9nbv34w';
+const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
 
 const siteHeaderElement = document.querySelector('.trip-main');
 const filterElement = siteHeaderElement.querySelector(
@@ -19,7 +23,9 @@ const filterElement = siteHeaderElement.querySelector(
 );
 const tripEventsElement = document.querySelector('.trip-events');
 
-const pointsModel = new PointsModel();
+const pointsModel = new PointsModel({
+  pointsApiService: new PointsApiService(END_POINT, AUTHORIZATION),
+});
 const offersModel = new OffersModel();
 const destinationsModel = new DestinationsModel();
 const filterModel = new FilterModel();
