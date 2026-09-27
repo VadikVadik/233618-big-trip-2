@@ -96,10 +96,7 @@ export default class NewPointPresenter {
   }
 
   #handleFormSubmit = (point) => {
-    this.#handleDataChange(UserAction.ADD_POINT, UpdateType.MINOR, {
-      id: crypto.randomUUID(),
-      ...point,
-    });
+    this.#handleDataChange(UserAction.ADD_POINT, UpdateType.MINOR, point);
 
     this.destroy();
   };
