@@ -30,6 +30,22 @@ export default class NewPointPresenter {
     this.#handleDestroy = onDestroy;
   }
 
+  get offersList() {
+    return this.#offersList;
+  }
+
+  set offersList(offers) {
+    this.#offersList = offers;
+  }
+
+  get destinationsList() {
+    return this.#destinationsList;
+  }
+
+  set destinationsList(destinations) {
+    this.#destinationsList = destinations;
+  }
+
   init() {
     if (this.#editPointComponent !== null) {
       return;
