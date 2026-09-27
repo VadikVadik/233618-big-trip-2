@@ -126,7 +126,11 @@ export default class EditPointView extends AbstractStatefulView {
     super();
 
     if (isNewPoint) {
-      point = DEFAULT_POINT;
+      point = {
+        ...DEFAULT_POINT,
+        destination: destinations[0],
+        destinationId: destinations[0].id,
+      };
     }
 
     this._setState(EditPointView.parsePointToState(point));
@@ -264,7 +268,11 @@ export default class EditPointView extends AbstractStatefulView {
     );
 
     if (newDestination) {
-      this.updateElement({ destination: newDestination });
+      this.updateElement({
+        destination: newDestination,
+        destinationId: newDestination.id,
+      });
+
       this.#updateView();
     }
   };
