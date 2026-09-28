@@ -110,9 +110,17 @@ export default class TripPresenter {
     this.#currentSortType = SortType.DATE;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
 
+    if (this.#messageComponent) {
+      remove(this.#messageComponent);
+    }
+
     this.#newPointPresenter.offersList = this.offers;
     this.#newPointPresenter.destinationsList = this.destinations;
-    this.#newPointPresenter.init();
+    this.#newPointPresenter.init(() => {
+      if (this.#messageComponent) {
+        render(this.#messageComponent, this.#tripContainer);
+      }
+    });
   }
 
   #renderTrip() {

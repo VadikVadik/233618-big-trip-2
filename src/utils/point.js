@@ -14,22 +14,18 @@ const formatDuration = (diffMinutes) => {
 
   const interval = dayjs.duration(diffMinutes, 'minutes');
 
-  const DD = interval.format('DD');
+  const DD = Math.floor(interval.asDays());
   const HH = interval.format('HH');
   const mm = interval.format('mm');
 
-  let result = '';
+  let result = `${mm}M `;
 
-  if (mm !== '00') {
-    result = `${mm}M `;
-  }
-
-  if (HH !== '00') {
+  if (HH !== '00' || DD > 0) {
     result = `${HH}H ${result} `;
   }
 
-  if (DD !== '00') {
-    result = `${DD}D ${result} `;
+  if (DD > 0) {
+    result = `${DD < 10 ? '0' : ''}${DD}D ${result} `;
   }
 
   return result.slice(0, -1);

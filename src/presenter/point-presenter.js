@@ -183,6 +183,8 @@ export default class PointPresenter {
       return;
     }
 
+    document.addEventListener('keydown', this.#escKeyDownHandler);
+
     const resetFormState = () => {
       this.#editPointComponent.updateElement({
         isDisabled: false,

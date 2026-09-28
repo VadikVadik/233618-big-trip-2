@@ -23,12 +23,12 @@ const createEventTypeListTemplate = (point) =>
       </div>`,
   ).join(' ');
 
-const createOpenEventButtonTemplate = (isNewPoint, isDisabled) => {
+const createOpenEventButtonTemplate = (isNewPoint) => {
   if (isNewPoint) {
     return '';
   }
 
-  return `<button class="event__rollup-btn" type="button" ${isDisabled ? 'disabled' : ''}>
+  return `<button class="event__rollup-btn" type="button"}>
             <span class="visually-hidden">Open event</span>
           </button>`;
 };
@@ -113,8 +113,8 @@ const createEditPointTemplate = (point, destinations, isNewPoint) => {
                            ${isDisabled ? 'disabled' : ''}>
                   </div>
                   <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
-                  <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${getResetButtonText(isNewPoint, isDeleting)}</button>
-                  ${createOpenEventButtonTemplate(isNewPoint, isDisabled)}
+                  <button class="event__reset-btn" type="reset"}>${getResetButtonText(isNewPoint, isDeleting)}</button>
+                  ${createOpenEventButtonTemplate(isNewPoint)}
                 </header>
                 <section class="event__details">
                 </section>
@@ -146,11 +146,7 @@ export default class EditPointView extends AbstractStatefulView {
     super();
 
     if (isNewPoint) {
-      point = {
-        ...DEFAULT_POINT,
-        destination: destinations[0],
-        destinationId: destinations[0].id,
-      };
+      point = DEFAULT_POINT;
     }
 
     this._setState(EditPointView.parsePointToState(point));
@@ -217,7 +213,7 @@ export default class EditPointView extends AbstractStatefulView {
       .addEventListener('change', this.#destinatonChangeHandler);
     this.element
       .querySelector('#event-price-1')
-      .addEventListener('change', this.#priceChangeHandler);
+      .addEventListener('input', this.#priceChangeHandler);
     this.element
       .querySelector('.event__reset-btn')
       .addEventListener('click', this.#formDeleteClickHandler);
