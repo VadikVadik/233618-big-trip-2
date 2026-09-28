@@ -28,13 +28,29 @@ const createOpenEventButtonTemplate = (isNewPoint) => {
     return '';
   }
 
-  return `<button class="event__rollup-btn" type="button">
+  return `<button class="event__rollup-btn" type="button"}>
             <span class="visually-hidden">Open event</span>
           </button>`;
 };
 
+const getResetButtonText = (isNewPoint, isDeleting) => {
+  if (isNewPoint) {
+    return 'Cancel';
+  }
+
+  return isDeleting ? 'Deleting...' : 'Delete';
+};
+
 const createEditPointTemplate = (point, destinations, isNewPoint) => {
-  const { startDateTime, endDateTime, type, destination } = point;
+  const {
+    startDateTime,
+    endDateTime,
+    type,
+    destination,
+    isDisabled,
+    isSaving,
+    isDeleting,
+  } = point;
 
   return `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
@@ -44,7 +60,7 @@ const createEditPointTemplate = (point, destinations, isNewPoint) => {
                       <span class="visually-hidden">Choose event type</span>
                       <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
                     </label>
-                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
                     <div class="event__type-list">
                       <fieldset class="event__type-group">
                         <legend class="visually-hidden">Event type</legend>
@@ -61,7 +77,8 @@ const createEditPointTemplate = (point, destinations, isNewPoint) => {
                            type="text"
                            name="event-destination"
                            value="${he.encode(destination.title)}"
-                           list="destination-list-1">
+                           list="destination-list-1"
+                           ${isDisabled ? 'disabled' : ''}>
                     <datalist id="destination-list-1">
                       ${destinations.map((dest) => `<option value="${he.encode(dest.title)}"></option>`).join('')}
                     </datalist>
@@ -72,14 +89,16 @@ const createEditPointTemplate = (point, destinations, isNewPoint) => {
                            id="event-start-time-1"
                            type="text"
                            name="event-start-time"
-                           value="${he.encode(humanizePointDateTime(startDateTime, DATE_TIME_FORMAT))}">
+                           value="${he.encode(humanizePointDateTime(startDateTime, DATE_TIME_FORMAT))}"
+                           ${isDisabled ? 'disabled' : ''}>
                     &mdash;
                     <label class="visually-hidden" for="event-end-time-1">To</label>
                     <input class="event__input  event__input--time"
                            id="event-end-time-1"
                            type="text"
                            name="event-end-time"
-                           value="${he.encode(humanizePointDateTime(endDateTime, DATE_TIME_FORMAT))}">
+                           value="${he.encode(humanizePointDateTime(endDateTime, DATE_TIME_FORMAT))}"
+                           ${isDisabled ? 'disabled' : ''}>
                   </div>
                   <div class="event__field-group  event__field-group--price">
                     <label class="event__label" for="event-price-1">
@@ -90,10 +109,11 @@ const createEditPointTemplate = (point, destinations, isNewPoint) => {
                            id="event-price-1"
                            type="text"
                            name="event-price"
-                           value="${point.price}">
+                           value="${point.price}"
+                           ${isDisabled ? 'disabled' : ''}>
                   </div>
-                  <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-                  <button class="event__reset-btn" type="reset">${isNewPoint ? 'Cancel' : 'Delete'}</button>
+                  <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
+                  <button class="event__reset-btn" type="reset"}>${getResetButtonText(isNewPoint, isDeleting)}</button>
                   ${createOpenEventButtonTemplate(isNewPoint)}
                 </header>
                 <section class="event__details">
@@ -193,7 +213,7 @@ export default class EditPointView extends AbstractStatefulView {
       .addEventListener('change', this.#destinatonChangeHandler);
     this.element
       .querySelector('#event-price-1')
-      .addEventListener('change', this.#priceChangeHandler);
+      .addEventListener('input', this.#priceChangeHandler);
     this.element
       .querySelector('.event__reset-btn')
       .addEventListener('click', this.#formDeleteClickHandler);
@@ -264,7 +284,11 @@ export default class EditPointView extends AbstractStatefulView {
     );
 
     if (newDestination) {
-      this.updateElement({ destination: newDestination });
+      this.updateElement({
+        destination: newDestination,
+        destinationId: newDestination.id,
+      });
+
       this.#updateView();
     }
   };
@@ -329,11 +353,17 @@ export default class EditPointView extends AbstractStatefulView {
   }
 
   static parsePointToState(point) {
-    return { ...point };
+    return { ...point, isDisabled: false, isSaving: false, isDeleting: false };
   }
 
   static parseStateToPoint(state) {
-    return { ...state };
+    const point = { ...state };
+
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
+
+    return point;
   }
 
   reset(point) {

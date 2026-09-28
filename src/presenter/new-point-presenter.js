@@ -13,6 +13,7 @@ export default class NewPointPresenter {
 
   #handleDataChange = null;
   #handleDestroy = null;
+  #destroyCb = null;
 
   #editPointComponent = null;
 
@@ -46,7 +47,9 @@ export default class NewPointPresenter {
     this.#destinationsList = destinations;
   }
 
-  init() {
+  init(destroyCb) {
+    this.#destroyCb = destroyCb;
+
     if (this.#editPointComponent !== null) {
       return;
     }
@@ -93,15 +96,11 @@ export default class NewPointPresenter {
     this.#editPointComponent = null;
 
     document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#destroyCb();
   }
 
   #handleFormSubmit = (point) => {
-    this.#handleDataChange(UserAction.ADD_POINT, UpdateType.MINOR, {
-      id: crypto.randomUUID(),
-      ...point,
-    });
-
-    this.destroy();
+    this.#handleDataChange(UserAction.ADD_POINT, UpdateType.MINOR, point);
   };
 
   #handleDeleteClick = () => {
@@ -114,4 +113,23 @@ export default class NewPointPresenter {
       this.destroy();
     }
   };
+
+  setSaving() {
+    this.#editPointComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this.#editPointComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#editPointComponent.shake(resetFormState);
+  }
 }

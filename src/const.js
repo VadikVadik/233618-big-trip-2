@@ -13,17 +13,14 @@ const EVENT_TYPES = [
 const DEFAULT_TYPE = 'flight';
 
 const DEFAULT_POINT = {
-  startDateTime: '2026-01-01T00:00:00.000Z',
-  endDateTime: '2026-01-01T00:00:00.000Z',
+  startDateTime: '',
+  endDateTime: '',
   type: 'flight',
   destinationId: 1,
   destination: {
     id: 1,
-    title: 'Amsterdam',
-    description:
-      'Amsterdam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. \
-      Cras aliquet varius magna, non porta ligula feugiat eget. \
-      Fusce tristique felis at fermentum pharetra.',
+    title: '',
+    description: '',
     photos: [
       'https://loremflickr.com/248/152?random=34',
       'https://loremflickr.com/248/152?random=23',

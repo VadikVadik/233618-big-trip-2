@@ -8,7 +8,7 @@ const createPointOffersTemplate = (point, offers) => {
   ).offers;
 
   if (!availableOffers.length) {
-    return '<section class="event__section  event__section--offers visually-hidden"></section>';
+    return '<section class="visually-hidden"></section>';
   }
 
   const offersList = availableOffers
