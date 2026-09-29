@@ -91,11 +91,8 @@ export default class PointView extends AbstractView {
     try {
       return createPointTemplate(this.#point);
     } catch (err) {
-      console.log(err);
-      console.log(this.#point);
+      throw new Error(err);
     }
-
-    return createPointTemplate(this.#point);
   }
 
   #openClickHandler = (evt) => {

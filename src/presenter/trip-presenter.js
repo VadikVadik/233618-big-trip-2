@@ -1,6 +1,7 @@
 import SortView from '../view/sort-view.js';
 import TripListView from '../view/trip-list-view.js';
 import MessageView from '../view/message-view.js';
+import TripInfoView from '../view/trip-info-view.js';
 import PointPresenter from './point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
@@ -29,6 +30,7 @@ export default class TripPresenter {
   #tripListComponent = new TripListView();
   #messageComponent = null;
   #sortComponent = null;
+  #tripInfoComponent = null;
   #tripContainer = null;
   #pointsModel = null;
   #offersModel = null;
@@ -148,6 +150,8 @@ export default class TripPresenter {
     for (const point of points) {
       this.#renderPoint(point);
     }
+
+    this.#renderTripInfo();
   }
 
   #renderPoint(point) {
@@ -198,6 +202,22 @@ export default class TripPresenter {
     render(this.#messageComponent, this.#tripContainer);
   }
 
+  #renderTripInfo() {
+    if (this.#tripInfoComponent) {
+      remove(this.#tripInfoComponent);
+    }
+
+    this.#tripInfoComponent = new TripInfoView({
+      points: this.#pointsModel.points.sort(sortPointsByDate),
+    });
+
+    render(
+      this.#tripInfoComponent,
+      document.querySelector('.trip-main'),
+      RenderPosition.AFTERBEGIN,
+    );
+  }
+
   #handleViewAction = async (actionType, updateType, update) => {
     this.#uiBlocker.block();
 
@@ -235,6 +255,7 @@ export default class TripPresenter {
     switch (updateType) {
       case UpdateType.PATCH:
         this.#pointPresenters.get(data.id).init(data);
+        this.#renderTripInfo();
         break;
       case UpdateType.MINOR:
         this.#clearTrip();
@@ -266,6 +287,7 @@ export default class TripPresenter {
     remove(this.#sortComponent);
     remove(this.#loadingComponent);
     remove(this.#failedComponent);
+    remove(this.#tripInfoComponent);
 
     if (this.#messageComponent) {
       remove(this.#messageComponent);
