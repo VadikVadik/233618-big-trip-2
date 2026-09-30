@@ -88,13 +88,17 @@ export default class PointsModel extends Observable {
   }
 
   #getOfferById(id) {
-    for (const category of this.#offersModel.offers) {
+    const target = this.#offersModel.offers.flatMap((category) => {
       const targetOffer = category.offers.find((offer) => offer.id === id);
 
       if (targetOffer) {
         return targetOffer;
       }
-    }
+
+      return [];
+    });
+
+    return target[0];
   }
 
   #adaptToClient(point) {

@@ -104,6 +104,43 @@ export default class PointPresenter {
     }
   }
 
+  setSaving() {
+    if (this.#mode === Mode.EDITING) {
+      this.#editPointComponent.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  }
+
+  setDeleting() {
+    if (this.#mode === Mode.EDITING) {
+      this.#editPointComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
+    }
+  }
+
+  setAborting() {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#pointComponent.shake();
+      return;
+    }
+
+    document.addEventListener('keydown', this.#escKeyDownHandler);
+
+    const resetFormState = () => {
+      this.#editPointComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#editPointComponent.shake(resetFormState);
+  }
+
   #replacePointToForm() {
     replace(this.#editPointComponent, this.#pointComponent);
     this.#offersPresenter.init();
@@ -158,41 +195,4 @@ export default class PointPresenter {
       isFavorite: !this.#point.isFavorite,
     });
   };
-
-  setSaving() {
-    if (this.#mode === Mode.EDITING) {
-      this.#editPointComponent.updateElement({
-        isDisabled: true,
-        isSaving: true,
-      });
-    }
-  }
-
-  setDeleting() {
-    if (this.#mode === Mode.EDITING) {
-      this.#editPointComponent.updateElement({
-        isDisabled: true,
-        isDeleting: true,
-      });
-    }
-  }
-
-  setAborting() {
-    if (this.#mode === Mode.DEFAULT) {
-      this.#pointComponent.shake();
-      return;
-    }
-
-    document.addEventListener('keydown', this.#escKeyDownHandler);
-
-    const resetFormState = () => {
-      this.#editPointComponent.updateElement({
-        isDisabled: false,
-        isSaving: false,
-        isDeleting: false,
-      });
-    };
-
-    this.#editPointComponent.shake(resetFormState);
-  }
 }

@@ -99,21 +99,6 @@ export default class NewPointPresenter {
     this.#destroyCb();
   }
 
-  #handleFormSubmit = (point) => {
-    this.#handleDataChange(UserAction.ADD_POINT, UpdateType.MINOR, point);
-  };
-
-  #handleDeleteClick = () => {
-    this.destroy();
-  };
-
-  #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
-      this.destroy();
-    }
-  };
-
   setSaving() {
     this.#editPointComponent.updateElement({
       isDisabled: true,
@@ -132,4 +117,19 @@ export default class NewPointPresenter {
 
     this.#editPointComponent.shake(resetFormState);
   }
+
+  #handleFormSubmit = (point) => {
+    this.#handleDataChange(UserAction.ADD_POINT, UpdateType.MINOR, point);
+  };
+
+  #handleDeleteClick = () => {
+    this.destroy();
+  };
+
+  #escKeyDownHandler = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      this.destroy();
+    }
+  };
 }

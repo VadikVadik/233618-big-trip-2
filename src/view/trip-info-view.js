@@ -1,12 +1,17 @@
+import he from 'he';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizePointDateTime } from '../utils/point.js';
 
 const createRouteString = (points) => {
-  const destinations = points.map((point) => point.destination.title);
+  const destinations = points.map((point) =>
+    he.encode(point.destination.title),
+  );
 
   if (destinations.length > 3) {
     return `${destinations[0]} &mdash; ... &mdash; ${destinations.at(-1)}`;
-  } else if (destinations.length > 1) {
+  }
+
+  if (destinations.length > 1) {
     return destinations.join(' &mdash; ');
   }
 

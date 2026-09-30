@@ -41,6 +41,81 @@ const getResetButtonText = (isNewPoint, isDeleting) => {
   return isDeleting ? 'Deleting...' : 'Delete';
 };
 
+const createEventTypeWrapperTemplate = (point, type, isDisabled) =>
+  `<div class="event__type-wrapper">
+    <label class="event__type  event__type-btn" for="event-type-toggle-1">
+      <span class="visually-hidden">Choose event type</span>
+      <img class="event__type-icon" width="17" height="17" src="img/icons/${he.encode(type)}.png" alt="Event type icon">
+    </label>
+    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
+    <div class="event__type-list">
+      <fieldset class="event__type-group">
+        <legend class="visually-hidden">Event type</legend>
+        ${createEventTypeListTemplate(point)}
+      </fieldset>
+    </div>
+  </div>`;
+
+const createDestinationFieldGroupTemplate = (
+  destinationsList,
+  pointDestination,
+  type,
+  isDisabled,
+) =>
+  `<div class="event__field-group  event__field-group--destination">
+    <label class="event__label  event__type-output" for="event-destination-1">
+      ${he.encode(type)}
+    </label>
+    <input class="event__input  event__input--destination"
+            id="event-destination-1"
+            type="text"
+            name="event-destination"
+            value="${he.encode(pointDestination.title)}"
+            list="destination-list-1"
+            ${isDisabled ? 'disabled' : ''}>
+    <datalist id="destination-list-1">
+      ${destinationsList.map((dest) => `<option value="${he.encode(dest.title)}"></option>`).join('')}
+    </datalist>
+  </div>`;
+
+const createTimeFieldGroupTemplate = (startDateTime, endDateTime, isDisabled) =>
+  `<div class="event__field-group  event__field-group--time">
+    <label class="visually-hidden" for="event-start-time-1">From</label>
+    <input class="event__input  event__input--time"
+            id="event-start-time-1"
+            type="text"
+            name="event-start-time"
+            value="${he.encode(humanizePointDateTime(startDateTime, DATE_TIME_FORMAT))}"
+            ${isDisabled ? 'disabled' : ''}>
+    &mdash;
+    <label class="visually-hidden" for="event-end-time-1">To</label>
+    <input class="event__input  event__input--time"
+            id="event-end-time-1"
+            type="text"
+            name="event-end-time"
+            value="${he.encode(humanizePointDateTime(endDateTime, DATE_TIME_FORMAT))}"
+            ${isDisabled ? 'disabled' : ''}>
+  </div>`;
+
+const createPriceFieldGroupTemplate = (price, isDisabled) =>
+  `<div class="event__field-group  event__field-group--price">
+    <label class="event__label" for="event-price-1">
+      <span class="visually-hidden">Price</span>
+      &euro;
+    </label>
+    <input class="event__input  event__input--price"
+            id="event-price-1"
+            type="text"
+            name="event-price"
+            value="${price}"
+            ${isDisabled ? 'disabled' : ''}>
+  </div>`;
+
+const createButtonsTemplate = (isDisabled, isSaving, isDeleting, isNewPoint) =>
+  `<button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
+  <button class="event__reset-btn" type="reset"}>${getResetButtonText(isNewPoint, isDeleting)}</button>
+  ${createOpenEventButtonTemplate(isNewPoint)}`;
+
 const createEditPointTemplate = (point, destinations, isNewPoint) => {
   const {
     startDateTime,
@@ -55,66 +130,11 @@ const createEditPointTemplate = (point, destinations, isNewPoint) => {
   return `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
                 <header class="event__header">
-                  <div class="event__type-wrapper">
-                    <label class="event__type  event__type-btn" for="event-type-toggle-1">
-                      <span class="visually-hidden">Choose event type</span>
-                      <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
-                    </label>
-                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
-                    <div class="event__type-list">
-                      <fieldset class="event__type-group">
-                        <legend class="visually-hidden">Event type</legend>
-                        ${createEventTypeListTemplate(point)}
-                      </fieldset>
-                    </div>
-                  </div>
-                  <div class="event__field-group  event__field-group--destination">
-                    <label class="event__label  event__type-output" for="event-destination-1">
-                      ${type}
-                    </label>
-                    <input class="event__input  event__input--destination"
-                           id="event-destination-1"
-                           type="text"
-                           name="event-destination"
-                           value="${he.encode(destination.title)}"
-                           list="destination-list-1"
-                           ${isDisabled ? 'disabled' : ''}>
-                    <datalist id="destination-list-1">
-                      ${destinations.map((dest) => `<option value="${he.encode(dest.title)}"></option>`).join('')}
-                    </datalist>
-                  </div>
-                  <div class="event__field-group  event__field-group--time">
-                    <label class="visually-hidden" for="event-start-time-1">From</label>
-                    <input class="event__input  event__input--time"
-                           id="event-start-time-1"
-                           type="text"
-                           name="event-start-time"
-                           value="${he.encode(humanizePointDateTime(startDateTime, DATE_TIME_FORMAT))}"
-                           ${isDisabled ? 'disabled' : ''}>
-                    &mdash;
-                    <label class="visually-hidden" for="event-end-time-1">To</label>
-                    <input class="event__input  event__input--time"
-                           id="event-end-time-1"
-                           type="text"
-                           name="event-end-time"
-                           value="${he.encode(humanizePointDateTime(endDateTime, DATE_TIME_FORMAT))}"
-                           ${isDisabled ? 'disabled' : ''}>
-                  </div>
-                  <div class="event__field-group  event__field-group--price">
-                    <label class="event__label" for="event-price-1">
-                      <span class="visually-hidden">Price</span>
-                      &euro;
-                    </label>
-                    <input class="event__input  event__input--price"
-                           id="event-price-1"
-                           type="text"
-                           name="event-price"
-                           value="${point.price}"
-                           ${isDisabled ? 'disabled' : ''}>
-                  </div>
-                  <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
-                  <button class="event__reset-btn" type="reset"}>${getResetButtonText(isNewPoint, isDeleting)}</button>
-                  ${createOpenEventButtonTemplate(isNewPoint)}
+                  ${createEventTypeWrapperTemplate(point, type, isDisabled)}
+                  ${createDestinationFieldGroupTemplate(destinations, destination, type, isDisabled)}
+                  ${createTimeFieldGroupTemplate(startDateTime, endDateTime, isDisabled)}
+                  ${createPriceFieldGroupTemplate(point.price, isDisabled)}
+                  ${createButtonsTemplate(isDisabled, isSaving, isDeleting, isNewPoint)}
                 </header>
                 <section class="event__details">
                 </section>
@@ -192,22 +212,17 @@ export default class EditPointView extends AbstractStatefulView {
   }
 
   _restoreHandlers() {
-    this.element
-      .querySelector('form')
-      .addEventListener('submit', this.#formSubmitHandler);
-
     if (!this.#isNewPoint) {
       this.element
         .querySelector('.event__rollup-btn')
         .addEventListener('click', this.#closeClickHandler);
     }
 
-    this.element
-      .querySelector('form')
-      .addEventListener('change', this.#eventTypeToggleHandler);
-    this.element
-      .querySelector('form')
-      .addEventListener('change', this.#offersChangeHandler);
+    const formElement = this.element.querySelector('form');
+    formElement.addEventListener('submit', this.#formSubmitHandler);
+    formElement.addEventListener('change', this.#eventTypeToggleHandler);
+    formElement.addEventListener('change', this.#offersChangeHandler);
+
     this.element
       .querySelector('[name="event-destination"]')
       .addEventListener('change', this.#destinatonChangeHandler);
@@ -238,8 +253,14 @@ export default class EditPointView extends AbstractStatefulView {
         ...datepickerOptions,
         onClose: this.#endDateChangeHandler,
         defaultDate: this._state.endDateTime,
+        minDate: this._state.startDateTime,
       },
     );
+  }
+
+  reset(point) {
+    this.element.querySelectorAll('input').forEach((input) => input.blur());
+    this.updateElement(EditPointView.parseStateToPoint(point));
   }
 
   #startDateChangeHandler = ([userDate]) => {
@@ -295,8 +316,15 @@ export default class EditPointView extends AbstractStatefulView {
 
   #priceChangeHandler = (evt) => {
     evt.preventDefault();
-    this.updateElement({ price: evt.target.value });
-    this.#updateView();
+    const value = evt.target.value;
+
+    if (/^[0-9]+$/.test(value)) {
+      this.updateElement({ price: value });
+      this.#updateView();
+      const priceElement = this.element.querySelector('#event-price-1');
+      priceElement.focus();
+      priceElement.setSelectionRange(value.length, value.length);
+    }
   };
 
   #offersChangeHandler = (evt) => {
@@ -364,10 +392,5 @@ export default class EditPointView extends AbstractStatefulView {
     delete point.isDeleting;
 
     return point;
-  }
-
-  reset(point) {
-    this.element.querySelectorAll('input').forEach((input) => input.blur());
-    this.updateElement(EditPointView.parseStateToPoint(point));
   }
 }

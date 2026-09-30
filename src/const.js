@@ -15,18 +15,13 @@ const DEFAULT_TYPE = 'flight';
 const DEFAULT_POINT = {
   startDateTime: '',
   endDateTime: '',
-  type: 'flight',
-  destinationId: 1,
+  type: DEFAULT_TYPE,
+  destinationId: null,
   destination: {
-    id: 1,
+    id: null,
     title: '',
     description: '',
-    photos: [
-      'https://loremflickr.com/248/152?random=34',
-      'https://loremflickr.com/248/152?random=23',
-      'https://loremflickr.com/248/152?random=12',
-      'https://loremflickr.com/248/152?random=99',
-    ],
+    photos: [],
   },
   price: 0,
   offersIds: [],

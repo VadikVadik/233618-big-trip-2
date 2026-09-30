@@ -1,3 +1,4 @@
+import he from 'he';
 import AbstractView from '../framework/view/abstract-view.js';
 import { isEmptyPoint } from '../utils/point.js';
 import { DEFAULT_TYPE } from '../const.js';
@@ -13,7 +14,7 @@ const createPointOffersTemplate = (point, offers) => {
 
   const offersList = availableOffers
     .map(({ title, price }) => {
-      const inputName = `event-offer-${title.replaceAll(' ', '-').toLowerCase()}`;
+      const inputName = `event-offer-${he.encode(title).replaceAll(' ', '-').toLowerCase()}`;
       const checkedOffer = isEmptyPoint(point)
         ? null
         : point.offers.find((offer) => offer.title === title);
@@ -25,7 +26,7 @@ const createPointOffersTemplate = (point, offers) => {
                        name="${inputName}"
                        ${checkedOffer ? 'checked' : ''}>
                 <label class="event__offer-label" for="${inputName}-1">
-                  <span class="event__offer-title">${title}</span>
+                  <span class="event__offer-title">${he.encode(title)}</span>
                   &plus;&euro;&nbsp;
                   <span class="event__offer-price">${price}</span>
                 </label>

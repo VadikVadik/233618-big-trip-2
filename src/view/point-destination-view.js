@@ -1,5 +1,5 @@
+import he from 'he';
 import AbstractView from '../framework/view/abstract-view.js';
-import { isEmptyPoint } from '../utils/point.js';
 
 const createEventPhotosContainer = (point) => {
   if (point.destination.photos.length === 0) {
@@ -8,19 +8,22 @@ const createEventPhotosContainer = (point) => {
 
   return `<div class="event__photos-container">
             <div class="event__photos-tape">
-              ${point.destination.photos.map(({ src, description }) => `<img class="event__photo" src="${src}" alt="${description}">`).join('')}
+              ${point.destination.photos.map(({ src, description }) => `<img class="event__photo" src="${he.encode(src)}" alt="${he.encode(description)}">`).join('')}
             </div>
           </div>`;
 };
 
 const createPointDestinationTemplate = (point) => {
-  if (isEmptyPoint(point) || point.destination.description === '') {
+  if (
+    point.destination.description === '' &&
+    point.destination.photos.length === 0
+  ) {
     return '<section class="visually-hidden"></section>';
   }
 
   return `<section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${point.destination.description}</p>
+            <p class="event__destination-description">${he.encode(point.destination.description)}</p>
             ${createEventPhotosContainer(point)}
           </section>`;
 };

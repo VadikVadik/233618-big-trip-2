@@ -1,9 +1,6 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration.js';
 import isBetween from 'dayjs/plugin/isBetween.js';
-dayjs.extend(duration);
-dayjs.extend(isBetween);
-
 import TripPresenter from './presenter/trip-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import PointsModel from './model/points-model.js';
@@ -13,6 +10,8 @@ import FilterModel from './model/filter-model.js';
 import NewPointButtonView from './view/new-point-button-view.js';
 import { render } from './framework/render.js';
 import TripApiService from './trip-api-service.js';
+dayjs.extend(duration);
+dayjs.extend(isBetween);
 
 const AUTHORIZATION = 'Basic kjuf56yu9nbv34w';
 const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
@@ -70,4 +69,7 @@ filterPresenter.init();
 tripPresenter.init();
 pointsModel.init().finally(() => {
   render(newPointButtonComponent, siteHeaderElement);
+  if (tripPresenter.isFailed) {
+    newPointButtonComponent.element.disabled = true;
+  }
 });

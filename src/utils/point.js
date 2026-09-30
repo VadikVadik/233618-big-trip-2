@@ -32,16 +32,15 @@ const formatDuration = (diffMinutes) => {
 };
 
 const isEmptyPoint = (point) => !Object.entries(point).length;
-const isFuturePoint = (point) =>
-  dayjs(point.startDateTime).isAfter(dayjs(), 'D');
+const isFuturePoint = (point) => dayjs(point.startDateTime).isAfter(dayjs());
 
 const isPresentPoint = (point) => {
   const start = dayjs(point.startDateTime);
   const end = dayjs(point.endDateTime);
-  return dayjs().isBetween(start, end, 'D');
+  return dayjs().isBetween(start, end, null, '[]');
 };
 
-const isPastPoint = (point) => dayjs(point.endDateTime).isBefore(dayjs(), 'D');
+const isPastPoint = (point) => dayjs(point.endDateTime).isBefore(dayjs());
 
 const sortPointsByDate = (pointA, pointB) =>
   dayjs(pointA.startDateTime) - dayjs(pointB.startDateTime);

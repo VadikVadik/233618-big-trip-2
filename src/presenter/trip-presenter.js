@@ -104,6 +104,10 @@ export default class TripPresenter {
     return this.#destinationsModel.destinations;
   }
 
+  get isFailed() {
+    return this.#isFailed;
+  }
+
   init() {
     this.#renderTrip();
   }
@@ -146,11 +150,7 @@ export default class TripPresenter {
     }
 
     this.#renderSort();
-
-    for (const point of points) {
-      this.#renderPoint(point);
-    }
-
+    points.forEach((point) => this.#renderPoint(point));
     this.#renderTripInfo();
   }
 
