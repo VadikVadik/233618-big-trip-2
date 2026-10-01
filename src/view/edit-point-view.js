@@ -237,10 +237,11 @@ export default class EditPointView extends AbstractStatefulView {
   setDatepicker() {
     const datepickerOptions = {
       enableTime: true,
-      time_24hr: true,
       dateFormat: 'd/m/y H:i',
       onClose: this.#startDateChangeHandler,
     };
+
+    datepickerOptions['time_24hr'] = true;
 
     this.#startDatepicker = flatpickr(
       this.element.querySelector('[name="event-start-time"]'),
